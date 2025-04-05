@@ -22,10 +22,20 @@ import {
   
     useEffect(() => {
       const fetchrecipes = async () => {
-        const MyRecipes = await AsyncStorage.getItem("customrecipes")
+        try {
+            const MyRecipes = await AsyncStorage.getItem("customrecipes")
+        var recipe = JSON.parse(MyRecipes);
+        console.log(recipe.recipeImage)
+        setrecipes([recipe])
         setLoading(false)
-        const parsedrecipes = JSON.parse(MyRecipes)
-        setrecipes(parsedrecipes)
+        
+        }
+        catch {
+            console.log('no recipes present')
+            setLoading(false)
+        }
+        
+        
         };
   
       fetchrecipes();
@@ -41,9 +51,8 @@ import {
     const deleterecipe = async (index) => {
         
         try {
-            const updatedRecipes = recipes.spread().splice(index, 1)
-        await AsyncStorage.setItem("customrecipes", updatedRecipes)
-        setrecipes(updatedRecipes) 
+        await AsyncStorage.removeItem("customrecipes")
+        setrecipes([]) 
         }
         catch {
             console.log('Error caused while deleting')
@@ -75,10 +84,10 @@ import {
               recipes.map((recipe, index) => (
                 <View key={index} style={styles.recipeCard} testID="recipeCard">
                   <TouchableOpacity testID="handlerecipeBtn" onPress={() => handlerecipeClick(recipe)}>
-                  <Image source={{ uri: recipe.image }} style={styles.recipeImage} />
-                    <Text style={styles.recipeTitle}>{recipe.title}</Text>
-                    <Text style={styles.recipeDescription.substring(0,10)} testID="recipeDescp">
-                  
+                  <Image source={{ uri: recipe.recipeImage }} style={styles.recipeImage} />
+                    <Text style={styles.recipeTitle}>{recipe.recipeName}</Text>
+                    <Text style={styles.recipeDescription} testID="recipeDescp">
+                        {recipe.category}
                     </Text>
                   </TouchableOpacity>
   
@@ -86,13 +95,13 @@ import {
                   <View style={styles.actionButtonsContainer} testID="editDeleteButtons">
                     
                   <TouchableOpacity
-            onPress={editrecipe(recipe, index)}
+            onPress={() => editrecipe(recipe, index)}
             style={styles.backButton}
           >
             <Text>Edit</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={deleterecipe(index)}
+            onPress={() => deleterecipe(index)}
             style={styles.favoriteButton}
           >
             <Text>Delete</Text>

@@ -5,33 +5,99 @@ import {widthPercentageToDP as wp,heightPercentageToDP as hp,} from "react-nativ
 
 export default function RecipesFormScreen({ route, navigation }) {
   const { recipeToEdit, recipeIndex, onrecipeEdited } = route.params || {};
-  const [title, setTitle] = useState(recipeToEdit ? recipeToEdit.title : "");
+  const [title, setTitle] = useState(recipeToEdit ? recipeToEdit.recipeName : "");
   const [image, setImage] = useState(recipeToEdit ? recipeToEdit.image : "");
   const [description, setDescription] = useState(
     recipeToEdit ? recipeToEdit.description : ""
   );
 
   const saverecipe = async () => {
-    const newrecipe = {title, image, description}
+    const newrecipe = {
+        category:'Beef',
+        idFood:'1',
+        idCategory: "1",
+        recipeName: title,
+        recipeInstructions: "Preheat the oven to 150C/300F/Gas 2.\r\nToss the beef and flour together in a bowl with some salt and black pepper.\r\nHeat a large casserole until hot, add half of the rapeseed oil and enough of the beef to just cover the bottom of the casserole.\r\nFry until browned on each side, then remove and set aside. Repeat with the remaining oil and beef.\r\nReturn the beef to the pan, add the wine and cook until the volume of liquid has reduced by half, then add the stock, onion, carrots, thyme and mustard, and season well with salt and pepper.\r\nCover with a lid and place in the oven for two hours.\r\nRemove from the oven, check the seasoning and set aside to cool. Remove the thyme.\r\nWhen the beef is cool and you're ready to assemble the pie, preheat the oven to 200C/400F/Gas 6.\r\nTransfer the beef to a pie dish, brush the rim with the beaten egg yolks and lay the pastry over the top. Brush the top of the pastry with more beaten egg.\r\nTrim the pastry so there is just enough excess to crimp the edges, then place in the oven and bake for 30 minutes, or until the pastry is golden-brown and cooked through.\r\nFor the green beans, bring a saucepan of salted water to the boil, add the beans and cook for 4-5 minutes, or until just tender.\r\nDrain and toss with the butter, then season with black pepper.\r\nTo serve, place a large spoonful of pie onto each plate with some green beans alongside.",
+        recipeImage: "https://images.unsplash.com/photo-1587248720327-8eb72564be1e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        recipeId: "beef_01",
+        alternateDrink: null,
+        recipeCategory: "Beef",
+        recipeOrigin: "British",
+        cookingDescription: "Preheat the oven to 150C/300F/Gas 2. Toss the beef and flour together in a bowl with some salt and black pepper...",
+        recipeTags: "Meat,Pie",
+        ingredients: [
+          {
+            ingredientName: "Beef",
+            measure: "1kg"
+          },
+          {
+            ingredientName: "Plain Flour",
+            measure: "2 tbs"
+          },
+          {
+            ingredientName: "Rapeseed Oil",
+            measure: "2 tbs"
+          },
+          {
+            ingredientName: "Red Wine",
+            measure: "200ml"
+          },
+          {
+            ingredientName: "Beef Stock",
+            measure: "400ml"
+          },
+          {
+            ingredientName: "Onion",
+            measure: "1 finely sliced"
+          },
+          {
+            ingredientName: "Carrots",
+            measure: "2 chopped"
+          },
+          {
+            ingredientName: "Thyme",
+            measure: "3 sprigs"
+          },
+          {
+            ingredientName: "Mustard",
+            measure: "2 tbs"
+          },
+          {
+            ingredientName: "Egg Yolks",
+            measure: "2 free-range"
+          },
+          {
+            ingredientName: "Puff Pastry",
+            measure: "400g"
+          },
+          {
+            ingredientName: "Green Beans",
+            measure: "300g"
+          },
+          {
+            ingredientName: "Butter",
+            measure: "25g"
+          },
+          {
+            ingredientName: "Salt",
+            measure: "pinch"
+          },
+          {
+            ingredientName: "Pepper",
+            measure: "pinch"
+          }
+        ],
+         
+  
+      }
     const recipes = await AsyncStorage.getItem("customrecipes")  || [];
-    if(recipeToEdit != 'undefined' && recipeToEdit != null) {
-        const myrecipe = recipes.find(currentRecipes => currentRecipes.recipeIndex == recipeToEdit.recipeIndex)
-        if(myrecipe != undefined) {
-            myrecipe.title = title
-        if(image) {
-        myrecipe.image = image
+    try {
+        await AsyncStorage.setItem("customrecipes", JSON.stringify(newrecipe))
         }
-        myrecipe.description = description
-        recipes.insert(recipeToEdit.recipeIndex, myrecipe)
-        await AsyncStorage.setItem("customrecipes", recipes)
-         onrecipeEdited()
-        } else {
-            await AsyncStorage.setItem("customrecipes", recipes + newrecipe)
+        catch {
+            console.log('Error while adding recepie')
         }
-    } else {
-        await AsyncStorage.setItem("customrecipes", recipes + newrecipe)
-    }
-    () => navigation.goBack()
+    navigation.goBack()
   };
 
   return (
