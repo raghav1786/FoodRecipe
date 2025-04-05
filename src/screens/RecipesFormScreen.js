@@ -12,7 +12,26 @@ export default function RecipesFormScreen({ route, navigation }) {
   );
 
   const saverecipe = async () => {
- 
+    const newrecipe = {title, image, description}
+    const recipes = await AsyncStorage.getItem("customrecipes")  || [];
+    if(recipeToEdit != 'undefined' && recipeToEdit != null) {
+        const myrecipe = recipes.find(currentRecipes => currentRecipes.recipeIndex == recipeToEdit.recipeIndex)
+        if(myrecipe != undefined) {
+            myrecipe.title = title
+        if(image) {
+        myrecipe.image = image
+        }
+        myrecipe.description = description
+        recipes.insert(recipeToEdit.recipeIndex, myrecipe)
+        await AsyncStorage.setItem("customrecipes", recipes)
+         onrecipeEdited()
+        } else {
+            await AsyncStorage.setItem("customrecipes", recipes + newrecipe)
+        }
+    } else {
+        await AsyncStorage.setItem("customrecipes", recipes + newrecipe)
+    }
+    () => navigation.goBack()
   };
 
   return (
@@ -42,7 +61,10 @@ export default function RecipesFormScreen({ route, navigation }) {
         numberOfLines={4}
         style={[styles.input, { height: hp(20), textAlignVertical: "top" }]}
       />
-      <TouchableOpacity onPress={saverecipe} style={styles.saveButton}>
+      <TouchableOpacity onPress={
+        saverecipe
+        
+        } style={styles.saveButton}>
         <Text style={styles.saveButtonText}>Save recipe</Text>
       </TouchableOpacity>
     </View>

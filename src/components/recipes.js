@@ -25,7 +25,7 @@ const ArticleCard = ({ item, index, navigation }) => {
       style={[styles.cardContainer, { paddingLeft: 20, paddingRight: 15}]} testID="articleDisplay"
     >
         <TouchableOpacity style={styles.row} onPress={()=> {
-            navigation.navigate('RecipeDetail')
+            navigation.navigate('RecipeDetail', {recipe: item})
         }}>
             <View>
               <Image
